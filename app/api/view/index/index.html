@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <title>test</title>
+</head>
+<body>
+<div style="text-align: center;">
+    <span>注册</span>
+</div>
+<div>
+    <div style="text-align: center">
+       <label >
+           手机号：<input type="number" id="phone" value="">
+       </label>
+    </div>
+    <hr>
+    <div style="text-align: center">
+    <input type="number" id="smscode" value=""><button type="submit" id="sendsms" onclick="send()">发送验证码</button>
+    </div>
+    <div style="text-align: center">
+        <button type="submit" id="sub" onclick="sub()">注册</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function send() {
+        let phone=document.getElementById('phone').value;
+        console.log(phone);
+        $.ajax({
+            url: "/api/sms/getcode",
+            data: {phone: phone},
+            type: "POST",//或 “GET”
+            dataType: "json",
+            success: function(data) {
+                console.log(data)
+                if(data.code==200){
+                    alert('发送成功')
+                }else{
+                    alert('发送失败')
+                }
+                //data为 后台传回的数据 json 格式
+            }
+        });
+    }
+    function sub() {
+        let phone=document.getElementById('phone').value;
+        let smscode=document.getElementById('smscode').value;
+        $.ajax({
+            url: "/api/user/reg",
+            data: {phone: phone,code:smscode},
+            type: "POST",//或 “GET”
+            dataType: "json",
+            success: function(data) {
+                if(data.code==222){
+                    alert(data.msg)
+                }
+                if(data.code==200){
+                    alert(data.msg)
+                }
+                if(data.code==203){
+                    window.location.href=data.url
+                }
+                console.log(data)
+                //data为 后台传回的数据 json 格式
+            }
+        });
+    }
+</script>
+</body>
+</html>
